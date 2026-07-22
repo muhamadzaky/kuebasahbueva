@@ -57,8 +57,6 @@ export default function Header() {
   const hasCart = Boolean(cart.length);
   const totalItems = useCountTotalCartItems();
 
-  console.log({ hasCart, totalItems });
-
   return (
     <header className="relative z-10 h-16 min-h-16">
       <div

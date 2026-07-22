@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import useMenuStore from "@/app/(customer)/menus/store";
-import { Button, Drawer, Divider, Modal, App } from "antd";
+import { App, Button, Drawer, Divider, Input } from "antd";
 import MenuCard from "./MenuCard";
 import PackageCard from "./PackageCard";
 import { cn } from "@/utils/cn";
@@ -21,11 +21,12 @@ import { generateReceiptPdf } from "@/utils/printInvoice";
 import { usePackages } from "@/service/packages.service";
 
 const CartDrawer = () => {
+  const { modal } = App.useApp();
   const path = usePathname();
   const router = useRouter();
-  const { modal } = App.useApp();
 
   const [packagingOpen, setPackagingOpen] = useState(false);
+  const [customerName, setCustomerName] = useState("");
 
   const totalMenuItems = useCountTotalCartItems();
   const totalMenuPrice = useCountTotalCartPrice();
@@ -55,11 +56,14 @@ const CartDrawer = () => {
   }));
 
   const isPackagingEmpty = packageCart.length === 0;
-  const isPrintDisabled = grandTotalItems <= 0 || isPackagingEmpty;
+  const isCustomerNameEmpty = customerName.trim().length === 0;
+  const isPrintDisabled =
+    grandTotalItems <= 0 || isPackagingEmpty || isCustomerNameEmpty;
 
   const handleClearAll = () => {
     clearCart();
     clearPackageCart();
+    setCustomerName("");
   };
 
   const openClearConfirm = () => {
@@ -75,10 +79,15 @@ const CartDrawer = () => {
   };
 
   const handlePrintInvoice = async () => {
+    if (isPrintDisabled) return;
+
     const combinedItems = [...cart, ...packageCart];
 
     try {
-      await generateReceiptPdf(combinedItems, { action: "download" });
+      await generateReceiptPdf(combinedItems, {
+        customerName: customerName.trim(),
+        action: "download",
+      });
       handleClearAll();
       setOpenCart(false);
     } catch (error) {
@@ -91,7 +100,7 @@ const CartDrawer = () => {
 
     modal.confirm({
       title: "Sudah selesai belanja?",
-      content: "Kalau invoice diprint, keranjang bakal kosong lagi ya!",
+      content: "Kalau invoice diprint, cart bakal kosong lagi ya!",
       centered: true,
       okText: "Ya, print invoice",
       cancelText: "Batal",
@@ -103,10 +112,7 @@ const CartDrawer = () => {
     <Drawer
       title="Keranjang"
       closable={{ "aria-label": "Close Button" }}
-      onClose={() => {
-        setOpenCart(false);
-        setPackagingOpen(false);
-      }}
+      onClose={() => setOpenCart(false)}
       open={openCart}
       classNames={{
         body: cn(grandTotalItems <= 0 && "flex items-center justify-center"),
@@ -173,7 +179,6 @@ const CartDrawer = () => {
             value={`${totalMenuItems} buah`}
             valueClassName="text-sm font-medium"
             justify="between"
-            className="mb-1"
           />
 
           <ItemField
@@ -182,7 +187,6 @@ const CartDrawer = () => {
             value={`${totalPackageItems} buah`}
             valueClassName="text-sm font-medium"
             justify="between"
-            className="mb-1"
           />
 
           <ItemField
@@ -193,8 +197,6 @@ const CartDrawer = () => {
             justify="between"
           />
 
-          <Divider size="small" />
-
           <ItemField
             label="Total Dibayar"
             labelClassName="text-base font-normal"
@@ -202,6 +204,24 @@ const CartDrawer = () => {
             valueClassName="text-lg font-bold"
             justify="between"
           />
+
+          <div className="mt-3">
+            <Input
+              placeholder="Dipesan Oleh"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              className={cn(
+                isCustomerNameEmpty && "border-primary-red! animate-shake",
+              )}
+              size="large"
+              maxLength={50}
+            />
+            {isCustomerNameEmpty && (
+              <div className="text-primary-red text-sm mt-1">
+                Nama pelanggan harus diisi ya!
+              </div>
+            )}
+          </div>
 
           <Button
             type="primary"

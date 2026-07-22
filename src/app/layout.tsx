@@ -36,7 +36,6 @@ function ThemeInitScript() {
                 } else {
                   root.classList.add(theme);
               }
-              console.log("ThemeInit:", theme);
             } catch (e) {
               console.error('Failed to init theme:', e);
             }

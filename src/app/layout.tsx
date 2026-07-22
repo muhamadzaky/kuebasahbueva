@@ -3,6 +3,7 @@ import { plusJakartaSans, inter } from "@/themes/fonts";
 import "../styles/globals.scss";
 import ThemeProvider from "@/components/ThemeProvider";
 import ConfigProvider from "@/provider/ConfigProvider";
+import QueryProvider from "@/provider/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "Kue Basah Bu Eva",
@@ -61,9 +62,11 @@ export default function RootLayout({
         <ThemeInitScript />
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col">
-        <ThemeProvider>
-          <ConfigProvider>{children}</ConfigProvider>
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider>
+            <ConfigProvider>{children}</ConfigProvider>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

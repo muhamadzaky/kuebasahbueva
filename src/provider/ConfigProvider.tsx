@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigProvider as AntdConfigProvider } from "antd";
+import { ConfigProvider as AntdConfigProvider, App as AntdApp } from "antd";
 import { useTheme } from "@/hooks/useTheme";
 import { lightTheme, darkTheme } from "@/themes";
 import { useState, useEffect } from "react";
@@ -31,7 +31,11 @@ const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [theme]);
 
-  return <AntdConfigProvider theme={antdTheme}>{children}</AntdConfigProvider>;
+  return (
+    <AntdConfigProvider theme={antdTheme}>
+      <AntdApp>{children}</AntdApp>
+    </AntdConfigProvider>
+  );
 };
 
 export default ConfigProvider;

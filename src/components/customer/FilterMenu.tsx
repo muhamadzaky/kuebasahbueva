@@ -28,7 +28,7 @@ export function FilterMenu() {
   return (
     <Select
       options={filters}
-      className="min-w-48"
+      className="md:min-w-48"
       value={searchParams.filter ?? undefined}
       onChange={(value) =>
         searchParams.update({
@@ -36,6 +36,7 @@ export function FilterMenu() {
         })
       }
       placeholder="Filter"
+      size="large"
       allowClear
     />
   );

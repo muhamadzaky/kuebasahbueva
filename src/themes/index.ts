@@ -3,8 +3,8 @@ import type { ThemeConfig } from "antd";
 import { colorTheme } from "./colors";
 import { light as dropdownLight, dark as dropdownDark } from "./dropdown";
 import { light as menuLight, dark as menuDark } from "./menu";
+import { light as modalLight, dark as modalDark } from "./modal";
 
-// Light mode base tokens
 const lightBase: ThemeConfig["token"] = {
   colorPrimary: colorTheme.primaryRed,
   colorText: colorTheme.primaryBlack,
@@ -14,7 +14,6 @@ const lightBase: ThemeConfig["token"] = {
   fontFamily: "var(--font-sans), Arial, Helvetica, sans-serif",
 };
 
-// Dark mode base tokens
 const darkBase: ThemeConfig["token"] = {
   colorPrimary: colorTheme.primaryRed,
   colorText: colorTheme.primaryWhite,
@@ -31,6 +30,7 @@ export const lightTheme: ThemeConfig = {
   components: {
     Dropdown: dropdownLight,
     Menu: menuLight,
+    Modal: modalLight,
   },
 };
 
@@ -40,5 +40,6 @@ export const darkTheme: ThemeConfig = {
   components: {
     Dropdown: dropdownDark,
     Menu: menuDark,
+    Modal: modalDark,
   },
 };

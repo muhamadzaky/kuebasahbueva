@@ -18,7 +18,7 @@ export default async function Menus({
       <h1 className="font-bold text-4xl">Menu</h1>
       <h3 className="text-xl font-mono">Lihat menu yang kamu mau!</h3>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col md:flex-row gap-3">
         <Search
           paramKey="s"
           placeholder="Atau cari menu di sini..."

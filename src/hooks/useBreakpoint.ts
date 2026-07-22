@@ -8,7 +8,7 @@ export function useBreakpoint() {
 
   useEffect(() => {
     const handleResize = () => setWidth(window.innerWidth);
-    handleResize(); // set nilai awal begitu mount
+    handleResize();
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);

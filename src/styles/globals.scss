@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --ant-font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+.light {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-plus-jakarta-sans);
+  --font-mono: var(--font-inter);
+
+  --color-primary-black: #1b1b1b;
+  --color-primary-gray: #797979;
+  --color-primary-blue: #1476d9;
+  --color-primary-white: #ffffff;
+  --color-primary-red: #f22f3d;
+  --color-primary-green: #219653;
+  --color-secondary-black: #949494;
+  --color-secondary-gray: #e9e9e9;
+  --color-secondary-blue: #f5faff;
+  --color-tertiary-gray: #f9f9f9;
+  --color-tertiary-blue: #244579;
+  --color-divider-light: #dedede;
+  --color-placeholder: #b9b9b9;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.h-inherit {
+  height: inherit;
+}
+
+.ant-dropdown-menu-item-selected,
+.ant-dropdown-menu-submenu-title-selected {
+  color: var(--primary-white) !important;
+}

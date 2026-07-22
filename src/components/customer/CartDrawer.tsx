@@ -78,7 +78,7 @@ const CartDrawer = () => {
     const combinedItems = [...cart, ...packageCart];
 
     try {
-      await generateReceiptPdf(combinedItems);
+      await generateReceiptPdf(combinedItems, { action: "download" });
       handleClearAll();
       setOpenCart(false);
     } catch (error) {

@@ -15,12 +15,12 @@ export interface OrderItem {
 
 interface GenerateReceiptOptions {
   storeName?: string;
-  storeInfo?: string[]; // baris-baris info di bawah nama toko, misal alamat, no. HP
+  storeInfo?: string[];
   invoiceNo?: string;
   tableNo?: string;
   fileName?: string;
   action?: "open" | "download" | "print" | "blob";
-  logoPath?: string; // default "/logo.png"
+  logoPath?: string;
 }
 
 function formatRupiah(value: number): string {
@@ -37,7 +37,6 @@ function formatDate(date: Date): string {
   });
 }
 
-// Garis putus-putus, simple pakai text repeated dash
 function dashedLine(): Content {
   return {
     text: "- ".repeat(46),
@@ -47,7 +46,6 @@ function dashedLine(): Content {
   };
 }
 
-// Convert image di /public jadi base64 dataURL biar bisa dipakai pdfmake
 async function loadImageAsDataUrl(path: string): Promise<string> {
   const res = await fetch(path);
   const blob = await res.blob();
@@ -59,46 +57,27 @@ async function loadImageAsDataUrl(path: string): Promise<string> {
   });
 }
 
-export async function generateReceiptPdf(
+function buildDocDefinition(
   items: OrderItem[],
-  options: GenerateReceiptOptions = {},
-) {
-  const {
-    // invoiceNo,
-    fileName = `invoice-${dayjs().format("YYYYMMDDHHmmss")}.pdf`,
-    action = "open",
-    logoPath = "/logo.png",
-  } = options;
-
-  const logoDataUrl = await loadImageAsDataUrl(logoPath);
-
+  logoDataUrl: string,
+): TDocumentDefinitions {
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
 
-  // Header info (invoice no, tanggal) - opsional, tampil kalau ada
-  const metaLines: Content[] = [];
-  // if (invoiceNo) {
-  //   metaLines.push({
-  //     text: `No. Invoice: ${invoiceNo}`,
-  //     fontSize: 9,
-  //     color: "#555555",
-  //   });
-  // }
-  metaLines.push({
-    text: `Tanggal: ${formatDate(new Date())}`,
-    fontSize: 9,
-    color: "#555555",
-  });
+  const metaLines: Content[] = [
+    {
+      text: `Tanggal: ${formatDate(new Date())}`,
+      fontSize: 9,
+      color: "#555555",
+    },
+  ];
 
-  // Baris item, tiap item = 2 baris: nama di kiri, qty x harga = amount di kanan bawahnya
   const itemBlocks: Content[] = items.flatMap((item) => {
     const amount = item.price * item.quantity;
     return [
-      {
-        columns: [{ text: item.name, fontSize: 10, bold: true }],
-      },
+      { columns: [{ text: item.name, fontSize: 10, bold: true }] },
       {
         columns: [
           {
@@ -106,19 +85,15 @@ export async function generateReceiptPdf(
             fontSize: 9,
             color: "#555555",
           },
-          {
-            text: formatRupiah(amount),
-            fontSize: 10,
-            alignment: "right",
-          },
+          { text: formatRupiah(amount), fontSize: 10, alignment: "right" },
         ],
         margin: [0, 0, 0, 6],
       },
     ];
   });
 
-  const docDefinition: TDocumentDefinitions = {
-    pageSize: { width: 227, height: "auto" }, // ~80mm thermal receipt width
+  return {
+    pageSize: { width: 227, height: "auto" },
     pageMargins: [16, 16, 16, 16],
     content: [
       {
@@ -171,27 +146,75 @@ export async function generateReceiptPdf(
         margin: [0, 8, 0, 0],
       },
     ],
-    defaultStyle: {
-      font: "Roboto",
-    },
+    defaultStyle: { font: "Roboto" },
   };
+}
 
-  const pdf: any = pdfMake.createPdf(docDefinition);
+function getPdfBlob(docDefinition: TDocumentDefinitions): Promise<Blob> {
+  return new Promise((resolve) => {
+    const pdf: any = pdfMake.createPdf(docDefinition);
+    pdf.getBlob((blob: Blob) => resolve(blob));
+  });
+}
+
+export async function generateReceiptPdf(
+  items: OrderItem[],
+  options: GenerateReceiptOptions = {},
+) {
+  const {
+    fileName = `invoice-${dayjs().format("YYYYMMDDHHmmss")}.pdf`,
+    action = "open",
+    logoPath = "/logo.png",
+  } = options;
+
+  // PENTING: window.open() harus dipanggil PALING AWAL, sebelum ada `await`
+  // apapun. Ini yang bikin Safari/iOS nganggep ini masih "direct user gesture"
+  // dan gak nge-block sebagai popup. Tabnya sengaja dibuka kosong dulu,
+  // URL-nya baru diisi belakangan setelah blob PDF siap.
+  let preOpenedTab: Window | null = null;
+  if (action === "open") {
+    preOpenedTab = window.open("", "_blank");
+  }
+
+  const logoDataUrl = await loadImageAsDataUrl(logoPath);
+  const docDefinition = buildDocDefinition(items, logoDataUrl);
+
+  if (action === "blob") {
+    return getPdfBlob(docDefinition);
+  }
+
+  const blob = await getPdfBlob(docDefinition);
+  const blobUrl = URL.createObjectURL(blob);
 
   switch (action) {
-    case "download":
-      pdf.download(fileName);
+    case "open": {
+      if (preOpenedTab) {
+        preOpenedTab.location.href = blobUrl;
+      } else {
+        // Fallback kalau tab gagal ke-pre-open (misal blocked total)
+        window.open(blobUrl, "_blank");
+      }
+      // Revoke belakangan, kasih waktu browser buat load dulu
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
       return;
-    case "print":
-      pdf.print();
+    }
+    case "download": {
+      // Trik anchor + download attribute - ini yang paling reliable buat
+      // trigger native "Save PDF" di Android, dan tetep jalan normal di desktop
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
       return;
-    case "blob":
-      return new Promise<Blob>((resolve) => {
-        pdf.getBlob((blob: Blob) => resolve(blob));
-      });
-    case "open":
-    default:
-      pdf.open();
+    }
+    case "print": {
+      const printTab = window.open(blobUrl, "_blank");
+      printTab?.addEventListener("load", () => printTab.print());
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
       return;
+    }
   }
 }

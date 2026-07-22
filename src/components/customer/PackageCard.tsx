@@ -28,11 +28,9 @@ const PackageCard = ({ pkg, origin }: PackageCardProps) => {
         <div className="flex flex-col">
           <div className="font-semibold text-lg">{pkg.name}</div>
 
-          {pkg.price && (
-            <div className="text-base text-gray-500 dark:text-gray-400 font-mono">
-              Rp {pkg.price.toLocaleString()}
-            </div>
-          )}
+          <div className="text-base text-gray-500 dark:text-gray-400 font-mono">
+            Rp {pkg.price.toLocaleString("id-ID")}
+          </div>
         </div>
 
         <div className="relative">

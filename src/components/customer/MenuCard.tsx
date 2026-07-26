@@ -1,20 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import useMenuStore from "@/app/(customer)/menus/store";
 import { colorTheme } from "@/themes/colors";
 import { cn } from "@/utils/cn";
 import { getImageUrl } from "@/utils/uploadImage";
 import { RiAddLine, RiRestaurantFill, RiSubtractLine } from "@remixicon/react";
-import { Button, Card, InputNumber } from "antd";
+import { Button, Card, InputNumber, Image as AntImage } from "antd";
 import Image from "next/image";
 
 const MenuCard = ({ menu, origin }: { menu: any; origin?: string }) => {
   const { cart, addToCart, updateQuantity } = useMenuStore((state) => state);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const cartItem = cart.find((item) => item.id === menu.id);
   const url = getImageUrl(menu.image_path);
-
-  console.log("MenuCard image render: ", { url, menuImage: menu.image });
 
   return (
     <Card>
@@ -36,14 +36,32 @@ const MenuCard = ({ menu, origin }: { menu: any; origin?: string }) => {
           )}
         >
           {url ? (
-            <Image
-              src={url}
-              alt={menu.name}
-              fill
-              sizes="96px"
-              className="object-cover rounded"
-              unoptimized={url.includes("supabase.co")}
-            />
+            <>
+              <div
+                role="button"
+                onClick={() => setPreviewOpen(true)}
+                className="absolute inset-0 cursor-pointer"
+              >
+                <Image
+                  src={url}
+                  alt={menu.name}
+                  fill
+                  sizes="96px"
+                  className="object-cover rounded"
+                  unoptimized={url.includes("supabase.co")}
+                />
+              </div>
+
+              <AntImage
+                src={url}
+                alt={menu.name}
+                style={{ display: "none" }}
+                preview={{
+                  open: previewOpen,
+                  onOpenChange: (visible) => setPreviewOpen(visible),
+                }}
+              />
+            </>
           ) : (
             <div
               className={cn(
@@ -55,7 +73,6 @@ const MenuCard = ({ menu, origin }: { menu: any; origin?: string }) => {
             </div>
           )}
 
-          {/* Action */}
           <div className="absolute left-1/2 -bottom-4 -translate-x-1/2">
             {!cartItem ? (
               <Button

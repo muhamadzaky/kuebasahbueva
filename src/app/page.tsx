@@ -1,6 +1,10 @@
 "use client";
 
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
+import { buildWhatsAppLink } from "@/utils/generateWAOrder";
+import { Card } from "antd";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLayoutEffect } from "react";
 
@@ -12,63 +16,39 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-primary-white dark:bg-primary-black sm:items-start">
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans bg-primary-white dark:bg-primary-black h-screen">
+      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-center gap-6">
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
+          src="/logo.png"
+          alt="Kue Basah Bu Eva logo"
+          width={360}
+          height={360}
           priority
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+        {/* 
+        <Link
+          href={buildWhatsAppLink("")}
+          className="mt-8 text-2xl font-bold underline! text-primary-black! hover:text-primary-black! dark:text-primary-white! dark:hover:text-primary-white!"
+        >
+          {formatPhoneNumber(process.env.NEXT_PUBLIC_WA_NO)}
+        </Link>
+
+        <Link
+          href="https://gofood.co.id/bandung/restaurant/kue-basah-bu-eva-tata-surya-4c5aac71-ea6b-4b5f-91f5-e2546d97c133"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-lg text-primary-black! hover:text-primary-black! dark:text-primary-white! dark:hover:text-primary-white!"
+        >
+          <Card classNames={{ body: "flex items-center gap-2" }}>
+            Order On
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src="https://i.gojekapi.com/darkroom/gofood-id/v2/images/uploads/f9546f29-23c3-4384-adf9-03bb59a89136_gofood-logo.png?auto=format"
+              alt="GoFood logo"
+              width={130}
+              height={30}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          </Card>
+        </Link> */}
       </main>
     </div>
   );

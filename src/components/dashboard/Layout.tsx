@@ -14,7 +14,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
       <Sidebar />
       <div
         className={cn(
-          "flex flex-col flex-1 min-h-dvh w-full md:w-[calc(100%-260px)]",
+          "flex flex-col flex-1 min-h-dvh w-full md:w-[calc(100%-260px)] transition-all duration-300",
           isCollapsed ? "ml-17" : "ml-65",
         )}
       >

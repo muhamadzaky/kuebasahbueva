@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
         hostname: supabaseHost,
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "i.gojekapi.com",
+        pathname: "/darkroom/gofood-id/v2/images/uploads/**",
+      },
     ],
   },
 };

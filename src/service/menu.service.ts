@@ -9,6 +9,7 @@ export interface Menu {
   name: string;
   price: number;
   image_path: string | null;
+  is_active: boolean;
 }
 
 export const MENU_PAGE_SIZE = 12;

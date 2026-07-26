@@ -100,6 +100,12 @@ interface MenuPayload {
   imageFile?: File;
 }
 
+interface UpdateMenuPayload extends MenuPayload {
+  id: number;
+  currentImagePath?: string | null;
+  originalImagePath?: string | null;
+}
+
 export function useCreateMenu() {
   const supabase = createClient();
   const queryClient = useQueryClient();
@@ -140,11 +146,15 @@ export function useUpdateMenu() {
     mutationFn: async ({
       id,
       currentImagePath,
+      originalImagePath,
       ...payload
-    }: MenuPayload & { id: number; currentImagePath?: string | null }) => {
+    }: UpdateMenuPayload) => {
       let imagePath = currentImagePath ?? null;
 
       if (payload.imageFile) {
+        if (originalImagePath && originalImagePath !== currentImagePath) {
+          await deleteImage(originalImagePath).catch(() => {});
+        }
         if (currentImagePath) {
           await deleteImage(currentImagePath).catch(() => {});
         }

@@ -8,19 +8,14 @@ import {
   RiMoonLine,
   RiComputerLine,
 } from "@remixicon/react";
-import { Avatar as AntAvatar, Dropdown, Modal, Segmented } from "antd";
+import { Avatar as AntAvatar, Dropdown, App, Segmented } from "antd";
 import type { MenuProps } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { colorTheme } from "@/themes/colors";
 import { useTheme } from "@/hooks/useTheme";
-
-const { confirm } = Modal;
-
-// TODO: sambungin ke user beneran dari Supabase Auth
-const DUMMY_USER = {
-  name: "Admin",
-  avatarUrl: "https://api.dicebear.com/7.x/initials/svg?seed=Admin",
-};
+import { useProfile } from "@/service/profile.service";
+import { logout } from "@/service/auth.service";
 
 export default function AppAvatar({
   onlyImage = false,
@@ -28,11 +23,28 @@ export default function AppAvatar({
   onlyImage?: boolean;
 }) {
   const { theme, setTheme } = useTheme();
+  const { modal, message } = App.useApp();
+  const router = useRouter();
+
+  const profile = useProfile();
+
+  const displayName = `Halo${profile.data?.name || profile.data?.email ? `, ${profile.data.name || profile.data.email}` : ""}!`;
+  const avatarUrl = profile.data?.avatarUrl;
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      message.error("Gagal logout, coba lagi");
+    }
+  };
 
   const items: MenuProps["items"] = [
     {
       key: "profile",
-      label: <Link href="/dashboard/profile">Profile</Link>,
+      label: <Link href="/profile">Profile</Link>,
       icon: <RiUser3Line size={14} />,
     },
     {
@@ -63,12 +75,13 @@ export default function AppAvatar({
       icon: <RiLogoutBoxRLine size={14} />,
       danger: true,
       onClick: () => {
-        confirm({
+        modal.confirm({
           title: "Yakin mau logout?",
+          centered: true,
           okText: "Logout",
-          onOk: () => {
-            // TODO: panggil supabase.auth.signOut() + redirect ke /dashboard/login
-          },
+          okButtonProps: { danger: true },
+          cancelText: "Batal",
+          onOk: handleLogout,
         });
       },
     },
@@ -76,20 +89,14 @@ export default function AppAvatar({
 
   return (
     <Dropdown menu={{ items }} trigger={["hover"]}>
-      <div className="flex items-center gap-3 cursor-pointer max-w-50 overflow-hidden bg-primary-white rounded-lg p-2 dark:bg-gray-800">
-        <AntAvatar src={DUMMY_USER.avatarUrl} size={36} />
+      <div className="flex items-center gap-3 cursor-pointer max-w-50 overflow-hidden bg-primary-white rounded-lg p-2 dark:bg-[#181818]">
+        <AntAvatar src={avatarUrl} size={36} className="min-w-[36px]" />
         {!onlyImage && (
           <span className="text-[#1B1B1B] font-medium truncate dark:text-white">
-            {DUMMY_USER.name}
+            {displayName}
           </span>
         )}
-        {!onlyImage && (
-          <RiArrowDownSLine
-            size={16}
-            color={colorTheme.primaryBlack}
-            className="dark:text-gray-300"
-          />
-        )}
+        {!onlyImage && <RiArrowDownSLine size={18} />}
       </div>
     </Dropdown>
   );

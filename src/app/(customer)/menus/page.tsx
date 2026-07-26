@@ -1,8 +1,6 @@
-"use server";
-
 import { Search } from "@/components/Search";
 import { FilterMenu } from "@/components/customer/FilterMenu";
-import { getMenus } from "@/service/menu.service";
+import { getMenus } from "@/service/menu.server";
 import List from "./partials/List";
 
 export default async function Menus({
@@ -11,7 +9,8 @@ export default async function Menus({
   searchParams: Promise<{ s?: string; filter?: string }>;
 }) {
   const { s, filter } = await searchParams;
-  const menus = await getMenus(s, filter);
+  const initialResult = await getMenus(s, filter, 1);
+  console.log("initialResult:", initialResult);
 
   return (
     <div className="flex flex-col gap-3">
@@ -27,7 +26,12 @@ export default async function Menus({
         <FilterMenu />
       </div>
 
-      <List menus={menus} />
+      <List
+        initialMenus={initialResult.data}
+        initialHasMore={initialResult.hasMore}
+        searchQuery={s}
+        filter={filter}
+      />
     </div>
   );
 }

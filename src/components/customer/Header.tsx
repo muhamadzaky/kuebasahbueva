@@ -59,11 +59,7 @@ export default function Header() {
 
   return (
     <header className="relative z-10 h-16 min-h-16">
-      <div
-        className={cn(
-          "fixed inset-x-0 top-0 flex h-16 min-h-16 w-full items-center justify-between bg-primary-white py-3 transition-all duration-300 ease-in-out bg-primary-white dark:bg-primary-black",
-        )}
-      >
+      <div className="fixed inset-x-0 top-0 flex h-16 min-h-16 w-full items-center justify-between bg-primary-white py-3 transition-all duration-300 ease-in-out bg-primary-white dark:bg-primary-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between">
           <div className="flex-1 items-center gap-6 flex">
             <Image

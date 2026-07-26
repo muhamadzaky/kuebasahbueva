@@ -1,9 +1,4 @@
-import {
-  RiDashboardLine,
-  RiRestaurantLine,
-  RiBarChartLine,
-  RiSettings3Line,
-} from "@remixicon/react";
+import { RiDashboardLine, RiRestaurantLine } from "@remixicon/react";
 
 export const menus = [
   {
@@ -18,26 +13,26 @@ export const menus = [
       {
         id: "menu",
         title: "Kelola Menu",
-        href: "/dashboard/menu",
+        href: "/menu-list",
         icons: RiRestaurantLine,
       },
       {
-        id: "statistik",
-        title: "Statistik Penjualan",
-        href: "/dashboard/statistik",
-        icons: RiBarChartLine,
+        id: "package",
+        title: "Kelola Package",
+        href: "/package-list",
+        icons: RiRestaurantLine,
       },
     ],
   },
-  {
-    category: "Pengaturan",
-    items: [
-      {
-        id: "settings",
-        title: "Pengaturan",
-        href: "/dashboard/settings",
-        icons: RiSettings3Line,
-      },
-    ],
-  },
+  // {
+  //   category: "Pengaturan",
+  //   items: [
+  //     {
+  //       id: "settings",
+  //       title: "Pengaturan",
+  //       href: "/settings",
+  //       icons: RiSettings3Line,
+  //     },
+  //   ],
+  // },
 ];

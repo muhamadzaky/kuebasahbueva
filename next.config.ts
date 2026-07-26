@@ -9,8 +9,22 @@ const withSerwist = withSerwistInit({
   disable: process.env.NODE_ENV === "development",
 });
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseHost = supabaseUrl
+  ? new URL(supabaseUrl).hostname
+  : "supabase.co";
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: supabaseHost,
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
+  },
 };
 
 export default withSerwist(nextConfig);

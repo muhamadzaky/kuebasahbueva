@@ -68,11 +68,11 @@ async function loadImageAsDataUrl(path: string): Promise<string> {
 function buildDocDefinition(
   items: OrderItem[],
   logoDataUrl: string,
-  customerName?: string,
+  customerName?: string
 ): TDocumentDefinitions {
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0,
+    0
   );
 
   const metaLines: Content[] = [
@@ -169,10 +169,10 @@ function buildDocDefinition(
 
 export async function generateReceiptPdf(
   items: OrderItem[],
-  options: GenerateReceiptOptions = {},
+  options: GenerateReceiptOptions = {}
 ) {
   const {
-    fileName = `invoice-${dayjs().format("YYYYMMDDHHmmss")}.pdf`,
+    fileName = `KBBE-invoice-${dayjs().format("YYYYMMDDHHmmss")}.pdf`,
     action = "open",
     logoPath = "/logo.png",
     customerName,

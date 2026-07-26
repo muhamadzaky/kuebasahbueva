@@ -3,6 +3,7 @@
 import useMenuStore from "@/app/(customer)/menus/store";
 import { colorTheme } from "@/themes/colors";
 import { cn } from "@/utils/cn";
+import { getImageUrl } from "@/utils/uploadImage";
 import { RiAddLine, RiRestaurantFill, RiSubtractLine } from "@remixicon/react";
 import { Button, Card, InputNumber } from "antd";
 import Image from "next/image";
@@ -11,6 +12,9 @@ const MenuCard = ({ menu, origin }: { menu: any; origin?: string }) => {
   const { cart, addToCart, updateQuantity } = useMenuStore((state) => state);
 
   const cartItem = cart.find((item) => item.id === menu.id);
+  const url = getImageUrl(menu.image_path);
+
+  console.log("MenuCard image render: ", { url, menuImage: menu.image });
 
   return (
     <Card>
@@ -25,15 +29,20 @@ const MenuCard = ({ menu, origin }: { menu: any; origin?: string }) => {
           )}
         </div>
 
-        <div className="relative">
-          {menu.image ? (
+        <div
+          className={cn(
+            "relative rounded",
+            origin === "cart-drawer" ? "size-16" : "size-24",
+          )}
+        >
+          {url ? (
             <Image
-              src={menu.image}
+              src={url}
               alt={menu.name}
-              className={cn(
-                "rounded object-cover",
-                origin === "cart-drawer" ? "size-16" : "size-24",
-              )}
+              fill
+              sizes="96px"
+              className="object-cover rounded"
+              unoptimized={url.includes("supabase.co")}
             />
           ) : (
             <div

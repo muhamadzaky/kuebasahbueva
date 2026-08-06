@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Spin } from "antd";
 import { Masonry } from "@/components";
@@ -23,6 +23,12 @@ const List = ({
   const [menus, setMenus] = useState<Menu[]>(initialMenus);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialHasMore);
+
+  useEffect(() => {
+    setMenus(initialMenus);
+    setPage(1);
+    setHasMore(initialHasMore);
+  }, [initialMenus, initialHasMore]);
 
   const fetchMore = async () => {
     const nextPage = page + 1;

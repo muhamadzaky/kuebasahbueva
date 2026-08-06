@@ -71,14 +71,22 @@ export async function getMenusClient(
     .from("menus")
     .select("*", { count: "exact" })
     .eq("is_active", true)
-    .order("id", { ascending: true })
     .range(from, to);
 
   if (searchQuery) {
     query = query.ilike("name", `%${searchQuery}%`);
   }
-  if (filter) {
-    query = query.eq("category", filter);
+
+  if (filter === "name-asc") {
+    query = query.order("name", { ascending: true });
+  } else if (filter === "name-desc") {
+    query = query.order("name", { ascending: false });
+  } else if (filter === "price-asc") {
+    query = query.order("price", { ascending: true });
+  } else if (filter === "price-desc") {
+    query = query.order("price", { ascending: false });
+  } else {
+    query = query.order("id", { ascending: true });
   }
 
   const { data, count, error } = await query;

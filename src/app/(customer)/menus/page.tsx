@@ -27,6 +27,7 @@ export default async function Menus({
       </div>
 
       <List
+        key={`${s ?? ""}-${filter ?? ""}`}
         initialMenus={initialResult.data}
         initialHasMore={initialResult.hasMore}
         searchQuery={s}
